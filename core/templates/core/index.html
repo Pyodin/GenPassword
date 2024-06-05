@@ -1,0 +1,119 @@
+{% load static %}
+
+<!DOCTYPE html>
+<html lang="fr">
+
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.0.2/dist/css/bootstrap.min.css" rel="stylesheet"
+    integrity="sha384-EVSTQN3/azprG1Anm3QDgpJLIm9Nao0Yz1ztcQTwFspd3yD65VohhpuuCOmLASjC" crossorigin="anonymous" />
+  <link href="https://cdn.jsdelivr.net/npm/bootstrap-icons/font/bootstrap-icons.css" rel="stylesheet" />
+  <!-- add favicon -->
+  <link rel="shortcut icon" type="image/png" href="{% static 'lock.png' %}"/>
+  <title>Générateur de mot de passe</title>
+</head>
+
+<body class="bg-secondary">
+  <div class="container bg-light my-5 py-5 shadow">
+    <div class="d-flex align-items-center justify-content-center">
+      <img src="{% static 'lock.png' %}" alt="Lock" style="width: 50px; height: 50px;" />
+      <h1 class="mx-5" style="display: inline-block;">Générateur de mot de passe</h1>
+      <img src="{% static 'lock.png' %}" alt="Lock" style="width: 50px; height: 50px;" />
+    </div>
+    <p class="text-center">Générer un mot de passe sécurisé en quelques clics.</p>
+    <hr />
+
+    {% if message %}
+    <div class="alert alert-warning alert-dismissible" role="alert">
+      {{ message }}
+      <button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="Close"></button>
+    </div>
+    {% endif %}
+
+    <div class="row my-3">
+      <div class="col-md-6 offset-md-3 shadow">
+        <h2 class="mt-3">Paramètres</h2>
+        <p class="text-muted">Sélectionnez les paramètres pour générer un mot de passe sécurisé.</p>
+        <form method="post" class="p-4">
+          {% csrf_token %}
+          <div class="form-check form-switch">
+            <input class="form-check-input" type="checkbox" id="numbersChecked" name="numbersChecked" {% if form.numbersChecked %}checked{% endif %}>
+            <label class="form-check-label" for="numbersChecked">Inclure des <strong>Chiffres</strong> <small
+                class="text-primary text-strong">[0123456789]</small></label>
+            class="text-primary text-strong">[0123456789]</small></label>
+          </div>
+          <div class="form-check form-switch">
+            <input class="form-check-input" type="checkbox" id="lowerChecked" name="lowerChecked" {% if form.lowerChecked %}checked{% endif %}>
+            <label class="form-check-label" for="lowerChecked">Inclure des <strong>Minuscules</strong> <small
+                class="text-primary text-strong">[abcdef...wxyz]</small></label>
+          </div>
+          <div class="form-check form-switch">
+            <input class="form-check-input" type="checkbox" id="upperChecked" name="upperChecked" {% if form.upperChecked %}checked{% endif %}>
+            <label class="form-check-label" for="upperChecked">Inclure de <strong>Majuscules</strong> <small
+                class="text-primary text-strong">[ABCDEF...WXYZ]</small></label>
+          </div>
+          <div class="form-check form-switch">
+            <input class="form-check-input" type="checkbox" id="specialChecked" name="specialChecked" {% if form.specialChecked %}checked{% endif %}>
+            <label class="form-check-label" for="specialChecked">Inclure des caractères <strong>Spéciaux</strong>
+              <small class="text-primary text-strong">[!@#$%^&*()_+{}|:<>?]</small></label>
+          </div>
+          <div class="form-group mb-3">
+            <label for="customRange2" class="form-label"><strong>Longueur</strong> du mot de passe:</label>
+            <span class="mx-2 " id="rangeValue">{{form.length}}</span>
+            <div class="row ">
+              <div class="col-md-6 ">
+                <input type="range" class="form-range" min="2" max="32" id="customRange2" name="length" value="{{form.length}}">
+              </div>
+            </div>
+          </div>
+          <button type="submit" class="btn btn-primary">Générer</button>
+        </form>
+      </div>
+    </div>
+
+    {% if request.method == 'POST' %}
+      <div class="container">
+        <h2 class="mt-3">Résultat</h2>
+        <p class="text-muted">Voici la liste de vos mot de passe. Choissisez un mot de passe et copiez le dans votre
+        presse-papier</p>
+
+        <div class="row justify-content-start align-items-center">
+        {% for key, password in password.items %}
+        <div class="col-md-4">
+          <div class="alert-success p-1 m-1 d-flex align-items-center justify-content-between">
+            <h5 class="flex-grow-1 text-center" id={{ key }}>{{ password }}</h5>
+            <button class="btn-sm btn-secondary" onclick="copyPassword('{{ key }}')">
+              <i class="bi bi-clipboard"></i>
+            </button>
+          </div>
+        </div>
+        {% endfor %}
+        </div>
+      </div>
+    {% endif %}
+
+  </div>
+
+  <!-- footer -->
+  <footer class="bg-dark text-light text-center fixed-bottom">
+    <p class="p-1 m-0 ">Générateur de mot de passe - Powered by 
+      <a href="https://bhs-consulting.com" class="text-light fw-bold"style="text-decoration: none;">BHS-Consulting</a>
+    </p>
+    <script>
+      const range = document.getElementById('customRange2');
+      const rangeValue = document.getElementById('rangeValue');
+      rangeValue.textContent = range.value;
+      range.addEventListener('input', () => {
+        rangeValue.textContent = range.value;
+      });
+      function copyPassword(key) {
+        console.log(key);
+        const password = document.getElementById(key).textContent;
+        // log key 
+        navigator.clipboard.writeText(password);
+      }
+    </script>
+</body>
+
+</html>
