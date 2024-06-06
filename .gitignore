@@ -39,3 +39,7 @@ __pycache__/
 
 # Ignore database files
 *.sqlite3
+
+# Ignore terraform files
+.terraform/
+.terraform.lock.hcl

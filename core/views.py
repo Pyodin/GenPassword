@@ -26,7 +26,7 @@ def home(request):
                     "form": form,
                 },
             )
-        
+
         length = int(form["length"])
 
         allowedChars = ""

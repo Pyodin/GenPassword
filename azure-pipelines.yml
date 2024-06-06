@@ -6,6 +6,9 @@
 trigger:
 - master
 
+pool: 
+  name: 'pbhsc-pool'
+
 variables:
   # Azure Resource Manager connection created during pipeline creation
   azureServiceConnectionId: '09a815a8-f81a-411a-b2d3-d308cbf0679e'
