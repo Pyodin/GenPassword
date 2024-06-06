@@ -16,9 +16,6 @@ variables:
   # Web app name
   webAppName: 'webapp-genpassword'
 
-  # Agent VM image name
-  vmImageName: 'ubuntu-latest'
-
   # Environment name
   environmentName: 'webapp-genpassword'
 
@@ -33,8 +30,6 @@ stages:
   displayName: Build stage
   jobs:
   - job: BuildJob
-    pool:
-      vmImage: $(vmImageName)
     steps:
     - task: UsePythonVersion@0
       inputs:
@@ -69,8 +64,6 @@ stages:
   condition: succeeded()
   jobs:
   - deployment: DeploymentJob
-    pool:
-      vmImage: $(vmImageName)
     environment: $(environmentName)
     strategy:
       runOnce:
