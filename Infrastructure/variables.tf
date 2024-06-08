@@ -1,5 +1,11 @@
 # Variables for the infrastructure
 
+# Application name 
+variable "app_name" {
+  type        = string
+  description = "Name of the application"
+}
+
 # Azure region 
 variable "region" {
   type        = string
