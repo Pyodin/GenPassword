@@ -37,8 +37,8 @@ stages:
       displayName: 'Use Python $(pythonVersion)'
 
     - script: |
-        python -m venv venv
-        source venv/bin/activate
+        python -m venv antenv
+        source antenv/bin/activate
         python -m pip install --upgrade pip
         pip install setup
         pip install -r requirements.txt
@@ -46,7 +46,7 @@ stages:
       displayName: "Install requirements"
     
     - script: |
-        source venv/bin/activate
+        source antenv/bin/activate
         python manage.py collectstatic --noinput
       workingDirectory: $(projectRoot)
       displayName: "Collect static files"
