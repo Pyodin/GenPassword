@@ -6,15 +6,15 @@
 trigger:
 - master
 
-pool: 
-  name: 'pbhsc-pool'
-
 variables:
   # Azure Resource Manager connection created during pipeline creation
-  azureServiceConnectionId: '09a815a8-f81a-411a-b2d3-d308cbf0679e'
+  azureServiceConnectionId: 'b23a45ba-72cf-4911-ae65-3e0cdd35c9c2'
 
   # Web app name
   webAppName: 'webapp-genpassword'
+
+  # Agent VM image name
+  vmImageName: 'ubuntu-latest'
 
   # Environment name
   environmentName: 'webapp-genpassword'
@@ -22,7 +22,7 @@ variables:
   # Project root folder. Point to the folder containing manage.py file.
   projectRoot: $(System.DefaultWorkingDirectory)
 
-  # Python version: 3.12
+  # Python version: 3.7
   pythonVersion: '3.12'
 
 stages:
@@ -30,6 +30,8 @@ stages:
   displayName: Build stage
   jobs:
   - job: BuildJob
+    pool:
+      vmImage: $(vmImageName)
     steps:
     - task: UsePythonVersion@0
       inputs:
@@ -44,12 +46,6 @@ stages:
         pip install -r requirements.txt
       workingDirectory: $(projectRoot)
       displayName: "Install requirements"
-    
-    - script: |
-        source antenv/bin/activate
-        python manage.py collectstatic --noinput
-      workingDirectory: $(projectRoot)
-      displayName: "Collect static files"
 
     - task: ArchiveFiles@2
       displayName: 'Archive files'
@@ -59,7 +55,6 @@ stages:
         archiveType: zip
         archiveFile: $(Build.ArtifactStagingDirectory)/$(Build.BuildId).zip
         replaceExistingArchive: true
-        exclude: 'Infrastucture/**'
 
     - upload: $(Build.ArtifactStagingDirectory)/$(Build.BuildId).zip
       displayName: 'Upload package'
@@ -71,6 +66,8 @@ stages:
   condition: succeeded()
   jobs:
   - deployment: DeploymentJob
+    pool:
+      vmImage: $(vmImageName)
     environment: $(environmentName)
     strategy:
       runOnce:

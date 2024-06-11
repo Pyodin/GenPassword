@@ -24,3 +24,9 @@ variable "common_tags" {
   description = "(Optional) Map of tags to apply to the resources in the deployment. Defaults to none."
   default     = {}
 }
+
+# Domain name
+variable "domain" {
+  type        = string
+  description = "Domain name"
+}

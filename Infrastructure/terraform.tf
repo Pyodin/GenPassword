@@ -9,6 +9,9 @@ terraform {
       source  = "hashicorp/random"
       version = "~>3.0"
     }
+    ovh = {
+      source  = "ovh/ovh"
+    }
   }
 
   backend "azurerm" {
@@ -18,3 +21,13 @@ terraform {
     key                  = "genpassword.tfstate"
   }
 }
+
+# Provider block 
+
+provider "azurerm" {
+  features {}
+}
+
+provider "random" {}
+
+provider "ovh" {}
