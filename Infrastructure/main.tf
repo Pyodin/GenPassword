@@ -42,6 +42,7 @@ resource "azurerm_linux_web_app" "webapp" {
   app_settings = {
     "SECRET_KEY"                     = random_string.secret_key.result
     "SCM_DO_BUILD_DURING_DEPLOYMENT" = "true"
+    "CUSTOM_HOSTNAME"                = "${var.domain}"
   }
 }
 
@@ -51,7 +52,7 @@ resource "ovh_domain_zone_record" "verification" {
   subdomain = "asuid.www"
   target = azurerm_linux_web_app.webapp.custom_domain_verification_id
   fieldtype  = "TXT"
-  ttl = 3600
+  ttl = 60
 }
 
 # CNAME record 
@@ -60,7 +61,7 @@ resource "ovh_domain_zone_record" "cname" {
   target = azurerm_linux_web_app.webapp.default_hostname
   subdomain = "www"
   fieldtype  = "CNAME"
-  ttl = 3600
+  ttl = 60
 }
 
 # Hostname binding
